@@ -4,22 +4,28 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
-
+import androidx.appcompat.app.AppCompatActivity
 import com.example.frontend_robots.databinding.ActivityMainBinding
+import com.example.frontend_robots.domain.SearchData
+import com.example.frontend_robots.domain.SearchResponse
 import com.example.getfluent.NetworkModule
+import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Callback<SearchResponse> {
     private lateinit var binding: ActivityMainBinding
     val REQUEST_IMAGE_CAPTURE = 1
     private var selectedByteArray: ByteArray? = null
     private var selectedPhotoUri: Uri? = null
+    private lateinit var searchResponse: SearchResponse
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +47,16 @@ class MainActivity : AppCompatActivity() {
             if (selectedByteArray != null) {
                 searchImage()
             }
+        }
+    }
+
+    override fun onResponse(
+        call: retrofit2.Call<SearchResponse>,
+        response: Response<SearchResponse>
+    ) {
+        if (response.code() == 200) {
+            Log.d("Session", "Got a 200!")
+            searchResponse = response.body() as SearchResponse
         }
     }
 
@@ -89,7 +105,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun searchImage() {
-        NetworkModule.buildRetrofitClient().search(image = selectedByteArray.toString())
+        val call = NetworkModule.buildRetrofitClient().search(image =  SearchData(selectedByteArray.toString()))
+        call.enqueue(this)
+    }
+
+    override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+        Log.d("Error search:", call.request().body().toString())
     }
 
 }
