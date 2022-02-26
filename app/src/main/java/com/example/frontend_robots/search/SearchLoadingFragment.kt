@@ -18,7 +18,7 @@ class SearchLoadingFragment: BaseFragment(R.layout.fragment_loading) {
         super.onViewCreated(view, savedInstanceState)
         val img = requireArguments().getByteArray("compressed_img")
         Log.d("Search", "Obteniendo datos de la busqueda")
-        val data = SearchData(image = img.toString())
+        val data = SearchData(image = img!!.toString(Charsets.UTF_8))
         searchLoadingViewModel.execute(NetworkModule.buildRetrofitClient().search(data))
 
         searchLoadingViewModel.userDataLoadedSuccessfully.observe(viewLifecycleOwner) { isLoaded ->
