@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Frontend_robots</string>
+    <string name="go_to_result">Visitar publicación</string>
 </resources>
