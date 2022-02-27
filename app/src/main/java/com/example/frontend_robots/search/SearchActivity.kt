@@ -50,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
     private fun sendImage() {
         val bundle = Bundle()
         val fragment = SearchLoadingFragment.newInstance()
-        bundle.putByteArray("compressed_img", selectedByteArray)
+        bundle.putString("compressed_img", selectedPhotoUri.toString())
         fragment.arguments = bundle
         openFragment(fragment)
     }
