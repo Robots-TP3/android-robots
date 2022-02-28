@@ -6,16 +6,21 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.example.frontend_robots.R
 import java.io.ByteArrayOutputStream
+import java.io.File
+
 
 class SearchActivity : AppCompatActivity() {
 
     private val REQUEST_IMAGE_CAPTURE = 1
+    //private val
     private var selectedByteArray: ByteArray? = null
     private var selectedPhotoUri: Uri? = null
 
@@ -28,12 +33,14 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
-            selectedPhotoUri = data.data
-            val bitmap = MediaStore.Images.Media.getBitmap(baseContext?.contentResolver, selectedPhotoUri)
-            setPhoto(bitmap)
-            if (selectedByteArray != null) {
-                sendImage()
+        if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == 0) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                selectedPhotoUri = data.data.also { data.extras?.get(MediaStore.EXTRA_OUTPUT) }
+                //val bitmap = MediaStore.Images.Media.getBitmap(baseContext?.contentResolver, selectedPhotoUri)
+                //setPhoto(bitmap)
+                if (selectedPhotoUri != null) {
+                    sendImage()
+                }
             }
         }
     }
@@ -85,6 +92,16 @@ class SearchActivity : AppCompatActivity() {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
             }
         }
+        /*val m_intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val file = File(Environment.getExternalStorageDirectory(), "image.jpg")
+        val uri = FileProvider.getUriForFile(
+            this,
+            this.applicationContext.packageName + ".provider",
+            file
+        )
+        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE)*/
+
     }
 
     private fun setPhoto(bitmap: Bitmap){
