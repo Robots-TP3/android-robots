@@ -2,6 +2,7 @@ package com.example.frontend_robots.search
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -32,14 +33,22 @@ class SearchFragment: BaseFragment(R.layout.fragment_search) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
-            selectedPhotoUri = data.data
-            val bitmap = MediaStore.Images.Media.getBitmap(this.requireContext().contentResolver, selectedPhotoUri)
-            setPhoto(bitmap)
-            if (selectedByteArray != null) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == 0) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                val photo = data.extras?.get("data")
+                selectedPhotoUri = if (data.data != null) data.data else getImageUri(this.requireContext(), photo as Bitmap) }
+            if (selectedPhotoUri != null) {
                 sendImage()
             }
         }
+    }
+
+    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path: String =
+            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
     }
 
     private fun displaySearch() {

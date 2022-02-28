@@ -52,9 +52,6 @@ class SearchLoadingFragment: BaseFragment(R.layout.fragment_loading) {
             file
         )
         val body = MultipartBody.Part.createFormData("image", "image", requestFile)
-        //val reqFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        //val image = MultipartBody.Part.createFormData("image", "image.jpg", body)
-        //val data = SearchData(image = img!!.toString(Charsets.UTF_8))
         searchLoadingViewModel.execute(NetworkModule.buildRetrofitClient().search(body))
 
         searchLoadingViewModel.userDataLoadedSuccessfully.observe(viewLifecycleOwner) { isLoaded ->
