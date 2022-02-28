@@ -1,16 +1,18 @@
 package com.example.frontend_robots.search
 
+import android.R.attr
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.example.frontend_robots.R
 import java.io.ByteArrayOutputStream
@@ -35,15 +37,22 @@ class SearchActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == 0) {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                selectedPhotoUri = data.data.also { data.extras?.get(MediaStore.EXTRA_OUTPUT) }
-                //val bitmap = MediaStore.Images.Media.getBitmap(baseContext?.contentResolver, selectedPhotoUri)
-                //setPhoto(bitmap)
+                val photo = data.extras?.get("data")
+                selectedPhotoUri = if (data.data != null) data.data else getImageUri(applicationContext, photo as Bitmap) }
                 if (selectedPhotoUri != null) {
                     sendImage()
                 }
             }
-        }
     }
+
+    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path: String =
+            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
+    }
+
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
@@ -86,32 +95,14 @@ class SearchActivity : AppCompatActivity() {
         startActivityForResult(intent, 0)
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
             }
         }
-        /*val m_intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val file = File(Environment.getExternalStorageDirectory(), "image.jpg")
-        val uri = FileProvider.getUriForFile(
-            this,
-            this.applicationContext.packageName + ".provider",
-            file
-        )
-        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE)*/
 
-    }
-
-    private fun setPhoto(bitmap: Bitmap){
-        selectedByteArray = compressBitmap(bitmap, 30)
-    }
-
-    private fun compressBitmap(bitmap: Bitmap, quality: Int): ByteArray {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
-        return stream.toByteArray()
     }
 
 
