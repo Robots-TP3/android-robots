@@ -13,15 +13,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="243dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="68dp"
-            android:layout_marginTop="132dp"
-            android:layout_marginEnd="68dp"
-            android:text="Buscar similares" />
     </FrameLayout>
 
 

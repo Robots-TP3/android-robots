@@ -29,9 +29,14 @@ class SearchResultFragment: BaseFragment(R.layout.fragment_search_result) {
     }
 
     private fun fillSearch(searchResponse: SearchResponse) {
-        result_link.text = searchResponse.link
-        //Picasso.get().load(searchResponse.link).into(result_image)
-
+        searchResponse.message?.let {
+            result_ok_container.visibility = View.GONE
+            result_not_found_container.visibility = View.VISIBLE
+            result_message_not_found.text = it
+        } ?: run {
+            result_ok_container.visibility = View.VISIBLE
+            result_not_found_container.visibility = View.GONE
+        }
     }
 
     private fun replaceFragment(fragment: Fragment){
@@ -41,6 +46,6 @@ class SearchResultFragment: BaseFragment(R.layout.fragment_search_result) {
     }
 
     companion object {
-        fun newInstance(): SearchResultFragment = newInstance()
+        fun newInstance(): SearchResultFragment = SearchResultFragment()
     }
 }
