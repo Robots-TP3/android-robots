@@ -14,29 +14,36 @@ import kotlinx.android.synthetic.main.fragment_search_result.*
 class SearchResultFragment: BaseFragment(R.layout.fragment_search_result) {
 
     private val searchLoadingViewModel by activityViewModels<SearchViewModel>()
+    private var link : String? = null
+    private var searchResponse: SearchResponse? = null
+    private var messageResponse: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        searchLoadingViewModel.searchResponse?.let { searchResponse ->
-            viewSearchResult(searchResponse)
-            button_link.setOnClickListener {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(searchResponse.link))
-                startActivity(browserIntent)
-            }
-        } ?: searchLoadingViewModel.getMessageResponse().let {
-            viewSearchResultNotFound(it)
+        searchResponse = searchLoadingViewModel.searchResponse
+        messageResponse = searchLoadingViewModel.getMessageResponse()
+        viewSearchResult()
 
+        button_link.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            startActivity(browserIntent)
+        }
+
+        button_search_again.setOnClickListener {
+            replaceFragment(SearchFragment.newInstance())
         }
     }
 
-    private fun viewSearchResult(searchResponse: SearchResponse) {
-        result_ok_container.visibility = View.VISIBLE
-        result_not_found_container.visibility = View.GONE
-    }
-    private fun viewSearchResultNotFound(message: String) {
-        result_ok_container.visibility = View.GONE
-        result_not_found_container.visibility = View.VISIBLE
-        result_message_not_found.text = message
+    private fun viewSearchResult() {
+        searchResponse?.let {
+            result_ok_container.visibility = View.VISIBLE
+            result_not_found_container.visibility = View.GONE
+            link = it.link
+        } ?: messageResponse.let {
+            result_ok_container.visibility = View.GONE
+            result_not_found_container.visibility = View.VISIBLE
+            result_message_not_found.text = it
+        }
     }
 
     private fun replaceFragment(fragment: Fragment){
