@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.frontend_robots.domain.SearchResponse
 import com.example.frontend_robots.networking.NetworkViewModel
+import org.apache.commons.lang3.StringUtils
 import retrofit2.Call
 import retrofit2.Response
 
@@ -29,9 +30,11 @@ class SearchViewModel : NetworkViewModel<SearchResponse>() {
         Log.i("search data:", searchResponse.toString())
         mutableSearchDataLoadedSuccessfully.value = true
     }
-
     override fun onFailure(response: Response<SearchResponse>) {
-        // Do nothing
+        Log.d(TAG, "Failure: $response")
+        this.msgResponse = response.message()
+        mutableSearchDataLoadedSuccessfully.value = true
+
     }
 
     companion object {

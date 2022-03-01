@@ -14,9 +14,5 @@ interface APIService {
     fun search(
         @Part image: MultipartBody.Part
     ) : Call<SearchResponse>
-
-    companion object {
-        private const val IMAGE = "image"
-    }
 }
 

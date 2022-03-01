@@ -18,11 +18,7 @@ import java.io.ByteArrayOutputStream
 
 class SearchFragment: BaseFragment(R.layout.fragment_search) {
 
-    private val REQUEST_IMAGE_CAPTURE = 1
-    private var selectedByteArray: ByteArray? = null
     private var selectedPhotoUri: Uri? = null
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,7 +29,7 @@ class SearchFragment: BaseFragment(R.layout.fragment_search) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == 0) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_IMAGE_LOAD) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val photo = data.extras?.get("data")
                 selectedPhotoUri = if (data.data != null) data.data else getImageUri(this.requireContext(), photo as Bitmap) }
@@ -75,11 +71,11 @@ class SearchFragment: BaseFragment(R.layout.fragment_search) {
         val takeImage = dialogView.findViewById<Button>(R.id.take_image)
         upload.setOnClickListener {
             setupPhotoButton()
-            dialog.cancel()
+            dialog.dismiss()
         }
         takeImage.setOnClickListener {
             dispatchTakePictureIntent()
-            dialog.cancel()
+            dialog.dismiss()
         }
     }
 
@@ -97,16 +93,6 @@ class SearchFragment: BaseFragment(R.layout.fragment_search) {
         }
     }
 
-    private fun setPhoto(bitmap: Bitmap){
-        selectedByteArray = compressBitmap(bitmap, 30)
-    }
-
-    private fun compressBitmap(bitmap: Bitmap, quality: Int): ByteArray {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
-        return stream.toByteArray()
-    }
-
     private fun replaceFragment(fragment: Fragment){
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.search_container, fragment)
@@ -114,5 +100,8 @@ class SearchFragment: BaseFragment(R.layout.fragment_search) {
     }
 
     companion object {
-        fun newInstance(): SearchFragment = SearchFragment()    }
+        private const val REQUEST_IMAGE_LOAD = 0
+        private const val REQUEST_IMAGE_CAPTURE = 1
+        fun newInstance(): SearchFragment = SearchFragment()
+    }
 }

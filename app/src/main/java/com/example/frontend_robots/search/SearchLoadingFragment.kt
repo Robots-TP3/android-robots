@@ -24,8 +24,6 @@ import java.io.File
 
 class SearchLoadingFragment: BaseFragment(R.layout.fragment_loading) {
 
-    private val REQUEST_PERMISSION_CODE = 1
-
     private val searchLoadingViewModel by activityViewModels<SearchViewModel>()
 
     @SuppressLint("Recycle")
@@ -45,7 +43,7 @@ class SearchLoadingFragment: BaseFragment(R.layout.fragment_loading) {
         Log.d("Search", "Obteniendo datos de la busqueda")
         requestPermissionsIfNecessary(Array<String>(1) {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
-        });
+        })
         val file = File(path!!)
         val requestFile = RequestBody.create(
             MediaType.parse("image/jpg"),
@@ -106,6 +104,7 @@ class SearchLoadingFragment: BaseFragment(R.layout.fragment_loading) {
     }
 
     companion object {
+        private const val REQUEST_PERMISSION_CODE = 1
         fun newInstance(): SearchLoadingFragment = SearchLoadingFragment()
     }
 }
