@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.example.frontend_robots.R
 import com.example.frontend_robots.domain.SearchResponse
 import com.example.frontend_robots.utils.BaseFragment
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_search_result.*
 
 class SearchResultFragment: BaseFragment(R.layout.fragment_search_result) {
@@ -38,6 +39,7 @@ class SearchResultFragment: BaseFragment(R.layout.fragment_search_result) {
         searchResponse?.let {
             result_ok_container.visibility = View.VISIBLE
             result_not_found_container.visibility = View.GONE
+            Picasso.get().load(it.image).into(result_image)
             link = it.link
         } ?: messageResponse.let {
             result_ok_container.visibility = View.GONE

@@ -20,6 +20,7 @@ class SearchViewModel : NetworkViewModel<SearchResponse>() {
 
     override fun execute(call: Call<SearchResponse>) {
         mutableSearchDataLoadedSuccessfully.value = false
+        searchResponse = null
         Log.i(TAG, "Getting search data...")
         executeCallback(call)
     }
