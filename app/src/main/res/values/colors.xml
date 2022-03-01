@@ -8,5 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="menu_app_indigo">#5c6bc0</color>
+    <color name="background_app_light">#D4DFE8</color>
 
 </resources>

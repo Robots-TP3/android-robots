@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
 }
 
 android {
@@ -51,4 +53,11 @@ dependencies {
 
     // Gson
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+
+    implementation 'org.apache.commons:commons-text:1.7'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
